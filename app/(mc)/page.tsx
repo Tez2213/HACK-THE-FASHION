@@ -1,9 +1,10 @@
-import { Navbar } from "./components/Navbar";
-import { RevealObserver } from "./components/RevealObserver";
-import { event, faqs, HACK_END, HACK_START } from "./lib/event";
-import { Judges, Judging, Mentors, Schedule, TimelineSection } from "./sections/Event";
-import { Faq, FinalCta, Footer, PoweredBy, Rules, Submission, Venue } from "./sections/Info";
-import { About, Hero, PartnerStrip, Prizes, Tracks } from "./sections/Intro";
+import { RevealObserver } from "../components/RevealObserver";
+import { event, faqs, HACK_END, HACK_START } from "../lib/event";
+import { Judges, Judging, Schedule, TimelineSection } from "./Event";
+import { Faq, FinalCta, Footer, Rules, Sponsors, Submission, Venue } from "./Info";
+import { About, Hero, Prizes, Tracks } from "./Intro";
+import { McNav } from "./McNav";
+import { PageFx } from "./Motion";
 
 const jsonLd = [
   {
@@ -40,6 +41,7 @@ const jsonLd = [
   },
 ];
 
+/** Homepage: the block-world design. Content comes from app/lib/event.ts. */
 export default function Home() {
   return (
     <>
@@ -53,10 +55,9 @@ export default function Home() {
       >
         Skip to content
       </a>
-      <Navbar />
+      <McNav />
       <main>
         <Hero />
-        <PartnerStrip />
         <About />
         <Tracks />
         <Prizes />
@@ -64,8 +65,7 @@ export default function Home() {
         <Schedule />
         <Judging />
         <Judges />
-        <Mentors />
-        <PoweredBy />
+        <Sponsors />
         <Rules />
         <Submission />
         <Venue />
@@ -74,6 +74,7 @@ export default function Home() {
       </main>
       <Footer />
       <RevealObserver />
+      <PageFx />
     </>
   );
 }
