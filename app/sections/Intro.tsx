@@ -96,7 +96,7 @@ export function PartnerStrip() {
           <p className="label text-moss">Organised by</p>
           <div className="mt-3 flex gap-2">
             <div className={tile}>
-              <Image src={logos.aiSkillsLab} alt="AI Skills Lab CoE" className="size-12" sizes="48px" />
+              <Image src={logos.aiSkillsLab} alt="AI Skills Lab CoE" className="size-14" sizes="56px" />
             </div>
             <div className={`${tile} flex-1`}>
               <Image src={logos.kiet} alt="KIET Deemed to be University" className="h-10 w-auto" sizes="120px" />

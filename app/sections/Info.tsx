@@ -132,8 +132,8 @@ export function PoweredBy() {
                       <Image
                         src={it.logo}
                         alt={it.name}
-                        className={it.round ? "size-16" : "h-auto max-h-14 w-auto max-w-full object-contain"}
-                        sizes={it.round ? "64px" : "200px"}
+                        className={it.round ? "size-20" : "h-auto max-h-14 w-auto max-w-full object-contain"}
+                        sizes={it.round ? "80px" : "200px"}
                       />
                     ) : (
                       <span className="text-[14px] font-medium text-moss/70">{it.name}</span>
