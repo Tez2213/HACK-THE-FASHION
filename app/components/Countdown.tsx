@@ -6,7 +6,7 @@ import { useNow } from "../lib/useNow";
 const START = Date.parse(HACK_START);
 const END = Date.parse(HACK_END);
 
-function split(ms: number) {
+export function split(ms: number) {
   const s = Math.max(0, Math.floor(ms / 1000));
   return {
     Days: Math.floor(s / 86400),
