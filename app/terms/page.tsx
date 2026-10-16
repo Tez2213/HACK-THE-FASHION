@@ -26,8 +26,9 @@ const sections: { id: string; title: string; body: ReactNode }[] = [
         <p>
           These Terms &amp; Conditions (&ldquo;Terms&rdquo;) apply to everyone who registers for or
           takes part in Hack the Fashion 2026 (the &ldquo;Event&rdquo;), held on {event.dates} at the{" "}
-          {event.venue}. The Event is organised by the Hack the Fashion team and powered by Clothsy
-          AI · FabricVTON (together, the &ldquo;Organisers&rdquo;).
+          {event.venue}. The Event is organised by the AI Skills Lab CoE, KIET (the
+          &ldquo;Organisers&rdquo;), with title sponsor Clothsy AI, powered by FabricVTON, and
+          supporting partners HP and Intel.
         </p>
         <p>
           By registering, including through our application listing on Unstop, you confirm that
@@ -208,7 +209,7 @@ const sections: { id: string; title: string; body: ReactNode }[] = [
         </p>
         <p>
           We share your details only with the parties who need them to run the Event, such as the
-          venue and, for prize winners and internship candidates, Clothsy AI · FabricVTON. We do
+          venue and, for prize winners and internship candidates, our title sponsor Clothsy AI and FabricVTON. We do
           not sell your data. Your application on Unstop is also covered by Unstop&apos;s own
           privacy policy.
         </p>

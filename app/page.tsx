@@ -3,7 +3,7 @@ import { RevealObserver } from "./components/RevealObserver";
 import { event, faqs, HACK_END, HACK_START } from "./lib/event";
 import { Judges, Judging, Mentors, Schedule, TimelineSection } from "./sections/Event";
 import { Faq, FinalCta, Footer, PoweredBy, Rules, Submission, Venue } from "./sections/Info";
-import { About, Hero, Prizes, Tracks } from "./sections/Intro";
+import { About, Hero, PartnerStrip, Prizes, Tracks } from "./sections/Intro";
 
 const jsonLd = [
   {
@@ -21,8 +21,13 @@ const jsonLd = [
       name: event.venue,
       address: event.address,
     },
-    organizer: { "@type": "Organization", name: "Hack the Fashion", email: event.contact.email },
-    sponsor: { "@type": "Organization", name: "Clothsy AI · FabricVTON", url: event.fabricvtonUrl },
+    organizer: { "@type": "Organization", name: event.organiser, email: event.contact.email },
+    sponsor: [
+      { "@type": "Organization", name: "Clothsy AI", url: event.clothsyUrl },
+      { "@type": "Organization", name: "FabricVTON", url: event.fabricvtonUrl },
+      { "@type": "Organization", name: "HP" },
+      { "@type": "Organization", name: "Intel" },
+    ],
   },
   {
     "@context": "https://schema.org",
@@ -51,6 +56,7 @@ export default function Home() {
       <Navbar />
       <main>
         <Hero />
+        <PartnerStrip />
         <About />
         <Tracks />
         <Prizes />

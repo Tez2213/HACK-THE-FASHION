@@ -13,7 +13,7 @@ export function PoweredBadge({ className = "" }: { className?: string }) {
       className={`cut-sm inline-flex items-center gap-2 bg-violet py-2 pr-4 pl-3 text-[13px] font-medium tracking-[0.04em] text-white ${className}`}
     >
       <ClothsyMark className="size-4" />
-      Powered by Clothsy AI
+      Title sponsor · Clothsy AI
     </span>
   );
 }

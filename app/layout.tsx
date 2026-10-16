@@ -21,7 +21,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 const description =
-  "Build the future of fashion with AI. A 24-hour hackathon at the AI Skills Lab, KIET on 2–3 November 2026. Powered by Clothsy AI. ₹50,000+ in prizes.";
+  "Build the future of fashion with AI. A 24-hour hackathon at the AI Skills Lab, KIET on 2–3 November 2026. Organised by the AI Skills Lab CoE, KIET. Title sponsor Clothsy AI, powered by FabricVTON. ₹50,000+ in prizes.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),

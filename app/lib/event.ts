@@ -32,12 +32,18 @@ export const event = {
   address:
     "KIET Group of Institutions, Delhi-NCR, Meerut Road (NH-58), Ghaziabad, Uttar Pradesh",
   prizePool: "₹50,000+",
+  /** Organiser: the AI Skills Lab CoE, part of KIET. */
+  organiser: "AI Skills Lab CoE, KIET",
+  titleSponsor: "Clothsy AI",
+  poweredBy: "FabricVTON",
+  supportingPartners: "HP and Intel",
+  brochureUrl: "/sponsor-brochure.pdf",
   registrationDeadline: "28 October 2026",
   contact: {
     email: "hackthefashion@fabricvton.com",
     // Phone and socials are still placeholders.
     phone: "+91 00000 00000",
-    instagram: "https://instagram.com/hackthefashion",
+    instagram: "https://instagram.com/coeaiskills",
     linkedin: "https://linkedin.com/company/hackthefashion",
     tbc: true,
   },
@@ -58,7 +64,7 @@ export const stats = [
   { value: "24", label: "Hours of building" },
   { value: "6", label: "Challenge tracks" },
   { value: "₹50K+", label: "Prize pool", tbc: true },
-  { value: "150+", label: "Hackers expected", tbc: true },
+  { value: "250", label: "Students building" },
 ];
 
 export type TrackIcon = "tryon" | "discovery" | "design" | "fit" | "sustain" | "brands";

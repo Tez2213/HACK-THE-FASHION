@@ -50,9 +50,9 @@ export default function OpengraphImage() {
         />
         <div style={{ display: "flex", alignItems: "center", gap: 14, fontFamily: "sans-serif", fontSize: 22, letterSpacing: 3 }}>
           <div style={{ display: "flex", background: "#5F25FF", padding: "10px 18px", color: "white", fontSize: 20 }}>
-            POWERED BY CLOTHSY AI
+            TITLE SPONSOR · CLOTHSY AI
           </div>
-          <span style={{ color: "#5E6B5A" }}>· FABRICVTON</span>
+          <span style={{ color: "#5E6B5A" }}>POWERED BY FABRICVTON</span>
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div style={{ display: "flex", fontSize: 120, fontWeight: 700, lineHeight: 1, letterSpacing: -3 }}>

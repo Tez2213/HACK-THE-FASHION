@@ -1,6 +1,11 @@
 # HACK-THE-FASHION
 
-Official website for **Hack the Fashion 2026**, a 24-hour AI × fashion hackathon at the AI Skills Lab, KIET Group of Institutions (2–3 November 2026). Powered by Clothsy AI · FabricVTON.
+Official website for **Hack the Fashion 2026**, a 24-hour AI × fashion hackathon on 2–3 November 2026.
+
+- **Organised by:** AI Skills Lab CoE, KIET
+- **Title sponsor:** Clothsy AI
+- **Powered by:** FabricVTON
+- **Supporting partners:** HP and Intel
 
 Built with Next.js 16 (App Router, Cache Components) and Tailwind CSS v4. Every page is prerendered as static HTML.
 
@@ -40,6 +45,8 @@ Also set `NEXT_PUBLIC_SITE_URL` to the production domain so the Open Graph image
 | `app/globals.css` | Design tokens, cut-corner utilities, buttons, motion |
 | `app/opengraph-image.tsx` | Generated 1200×630 social preview |
 | `app/icon.svg` | Cut-corner favicon |
+| `app/lib/logos.ts` | Partner logos (optimised WebP files in `public/logos/`) |
+| `public/sponsor-brochure.pdf` | Sponsor brochure, linked from the sponsors section |
 
 ## Support
 

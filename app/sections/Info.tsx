@@ -1,9 +1,6 @@
 import Image, { type StaticImageData } from "next/image";
 import Link from "next/link";
-import clothsyLogo from "@/public/logos/clothsy.webp";
-import fabricvtonLogo from "@/public/logos/fabricvton.webp";
-import intelLogo from "@/public/logos/intel.webp";
-import kietLogo from "@/public/logos/kiet.webp";
+import { logos } from "../lib/logos";
 import { ClothsyMark, PoweredBadge } from "../components/ClothsyMark";
 import { ArrowRight, ArrowUpRight, Check, Instagram, LinkedIn, Mail, Phone, Pin } from "../components/Icons";
 import { SectionHeading } from "../components/SectionHeading";
@@ -20,20 +17,43 @@ export function PoweredBy() {
   ];
   const tiers: {
     tier: string;
+    note: string;
     span: string;
-    items: { name: string; logo?: StaticImageData; href?: string; violet?: boolean }[];
+    items: { name: string; logo?: StaticImageData; href?: string; violet?: boolean; round?: boolean }[];
   }[] = [
     {
-      tier: "Title partner",
+      tier: "Organised by",
+      note: "AI Skills Lab CoE, part of KIET",
       span: "lg:col-span-2",
       items: [
-        { name: "Clothsy AI", logo: clothsyLogo, href: event.clothsyUrl, violet: true },
-        { name: "FabricVTON", logo: fabricvtonLogo, href: event.fabricvtonUrl },
+        { name: "AI Skills Lab CoE", logo: logos.aiSkillsLab, round: true },
+        { name: "KIET Deemed to be University", logo: logos.kiet },
       ],
     },
-    { tier: "Host", span: "", items: [{ name: "KIET Group of Institutions", logo: kietLogo }] },
-    { tier: "Partners", span: "lg:col-span-2", items: [{ name: "Intel", logo: intelLogo }, { name: "Your brand here" }] },
+    {
+      tier: "Title sponsor",
+      note: "Clothsy AI",
+      span: "",
+      items: [{ name: "Clothsy AI", logo: logos.clothsy, href: event.clothsyUrl, violet: true }],
+    },
+    {
+      tier: "Powered by",
+      note: "FabricVTON",
+      span: "",
+      items: [{ name: "FabricVTON", logo: logos.fabricvton, href: event.fabricvtonUrl }],
+    },
+    {
+      tier: "Supporting partners",
+      note: "Supporting the AI Skills Lab CoE",
+      span: "lg:col-span-2",
+      items: [
+        { name: "HP", logo: logos.hp, round: true },
+        { name: "Intel", logo: logos.intel },
+      ],
+    },
   ];
+
+
 
   return (
     <section id="sponsors" className={`on-dark ${section} pattern-grid-dark bg-forest text-linen`}>
@@ -43,10 +63,10 @@ export function PoweredBy() {
             <SectionHeading
               dark
               index="09"
-              label="Powered by"
+              label="Title sponsor"
               title={
                 <>
-                  Powered by <span className="accent">Clothsy AI</span>
+                  Meet <span className="accent">Clothsy AI</span>
                 </>
               }
             />
@@ -75,7 +95,7 @@ export function PoweredBy() {
           <div data-reveal style={{ ["--reveal-delay" as string]: "120ms" }} className="lg:pt-10">
             {/* The one place violet is allowed to be big */}
             <div className="cut-lg bg-violet p-8 text-white md:p-10">
-              <Image src={clothsyLogo} alt="Clothsy AI" className="-ml-4 h-auto w-48" sizes="192px" />
+              <Image src={logos.clothsy} alt="Clothsy AI" className="-ml-4 h-auto w-48" sizes="192px" />
               <p className="mt-6 font-display text-3xl leading-tight font-semibold">
                 See it on you,
                 <br />
@@ -102,14 +122,19 @@ export function PoweredBy() {
             Sponsors &amp; partners
             <Tbc />
           </p>
-          <div className="mt-6 grid gap-6 lg:grid-cols-5">
+          <div className="mt-6 grid gap-8 lg:grid-cols-6 lg:gap-6">
             {tiers.map((t, ti) => (
               <div key={t.tier} data-reveal className={t.span} style={{ ["--reveal-delay" as string]: `${ti * 80}ms` }}>
                 <p className="text-[14px] font-medium text-linen/70">{t.tier}</p>
                 <ul className="mt-3 grid gap-3" style={{ gridTemplateColumns: `repeat(${t.items.length}, minmax(0, 1fr))` }}>
                   {t.items.map((it) => {
                     const inner = it.logo ? (
-                      <Image src={it.logo} alt={it.name} className="h-auto max-h-14 w-auto max-w-full object-contain" sizes="200px" />
+                      <Image
+                        src={it.logo}
+                        alt={it.name}
+                        className={it.round ? "size-16" : "h-auto max-h-14 w-auto max-w-full object-contain"}
+                        sizes={it.round ? "64px" : "200px"}
+                      />
                     ) : (
                       <span className="text-[14px] font-medium text-moss/70">{it.name}</span>
                     );
@@ -127,16 +152,29 @@ export function PoweredBy() {
                     );
                   })}
                 </ul>
+                <p className="mt-2 text-[13px] text-linen/60">{t.note}</p>
               </div>
             ))}
           </div>
-          <a
-            data-reveal
-            href={`mailto:${event.contact.email}?subject=Partnering%20with%20Hack%20the%20Fashion`}
-            className="mt-6 inline-flex items-center gap-2 font-medium text-linen underline decoration-linen/40 underline-offset-4 hover:decoration-linen"
-          >
-            Become a partner <ArrowRight className="size-4" />
-          </a>
+          <div data-reveal className="cut-md mt-10 flex flex-col gap-5 border-l-2 border-terracotta-light bg-forest-deep/60 p-6 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p className="font-display text-2xl font-semibold">Put your brand in the room.</p>
+              <p className="mt-1 text-[15px] text-linen/75">
+                250 builders, 24 hours, one jury that hires. Sponsorship tiers start at ₹5,000.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <a href={event.brochureUrl} target="_blank" rel="noopener" className="btn btn-ghost btn-ghost-light">
+                Sponsor brochure (PDF) <ArrowUpRight className="size-4" />
+              </a>
+              <a
+                href={`mailto:${event.contact.email}?subject=Partnering%20with%20Hack%20the%20Fashion`}
+                className="btn btn-ghost btn-ghost-light"
+              >
+                Become a partner <ArrowRight className="size-4" />
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -271,7 +309,7 @@ export function Venue() {
               }
             />
             <div data-reveal className="cut-md mt-8 inline-block bg-white px-5 py-4">
-              <Image src={kietLogo} alt="KIET Group of Institutions" className="h-14 w-auto" sizes="140px" />
+              <Image src={logos.kiet} alt="KIET Group of Institutions" className="h-14 w-auto" sizes="140px" />
             </div>
             <p data-reveal className="mt-6 flex gap-3">
               <Pin className="mt-1 size-5 shrink-0 text-terracotta" />
@@ -459,7 +497,9 @@ export function Footer() {
             </Link>
             <p className="mt-4 max-w-xs text-[15px] text-linen/70">{event.theme}.</p>
             <PoweredBadge className="mt-6" />
-            <p className="mt-3 text-[13px] text-linen/60">Clothsy AI · FabricVTON</p>
+            <p className="mt-3 text-[13px] text-linen/60">
+              Powered by FabricVTON · Supporting partners HP and Intel
+            </p>
           </div>
 
           {cols.map((col) => (
@@ -506,7 +546,7 @@ export function Footer() {
         </div>
 
         <div className="mt-14 flex flex-col gap-3 border-t border-linen/15 pt-6 text-[13px] text-linen/60 sm:flex-row sm:justify-between">
-          <p>Hosted at the {event.venueShort}</p>
+          <p>Organised by the {event.organiser}</p>
           <p>© 2026 Hack the Fashion. All rights reserved.</p>
         </div>
       </div>

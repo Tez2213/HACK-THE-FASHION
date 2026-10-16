@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Countdown } from "../components/Countdown";
 import { ClothsyMark } from "../components/ClothsyMark";
 import { HeroArt } from "../components/HeroArt";
@@ -5,6 +6,7 @@ import { ArrowRight, Check, TrackGlyph } from "../components/Icons";
 import { SectionHeading } from "../components/SectionHeading";
 import { Tbc } from "../components/Tbc";
 import { RegisterButton } from "../components/RegisterButton";
+import { logos } from "../lib/logos";
 import { event, perks, prizes, specialAwards, stats, tracks } from "../lib/event";
 
 export const container = "mx-auto w-full max-w-[var(--container)] px-4 sm:px-6";
@@ -27,7 +29,7 @@ export function Hero() {
             <span className="cut-sm grid size-6 place-items-center bg-violet text-white">
               <ClothsyMark className="size-3.5" />
             </span>
-            Powered by Clothsy AI · FabricVTON
+            Title sponsor Clothsy AI · Powered by FabricVTON
           </p>
 
           <h1 className="hero-in display-xl mt-6" style={{ ["--d" as string]: "60ms" }}>
@@ -84,6 +86,60 @@ export function Hero() {
   );
 }
 
+/** Who's behind the event: organiser, title sponsor, powered by, supporting partners. */
+export function PartnerStrip() {
+  const tile = "cut-sm flex h-16 items-center justify-center bg-white px-4";
+  return (
+    <section aria-label="Organiser, sponsors and partners" className="border-y border-forest/10 bg-white/50">
+      <div className={`${container} grid grid-cols-2 gap-x-4 gap-y-6 py-8 lg:grid-cols-[1.4fr_0.8fr_0.8fr_1.2fr] lg:gap-6`}>
+        <div className="col-span-2 lg:col-span-1">
+          <p className="label text-moss">Organised by</p>
+          <div className="mt-3 flex gap-2">
+            <div className={tile}>
+              <Image src={logos.aiSkillsLab} alt="AI Skills Lab CoE" className="size-12" sizes="48px" />
+            </div>
+            <div className={`${tile} flex-1`}>
+              <Image src={logos.kiet} alt="KIET Deemed to be University" className="h-10 w-auto" sizes="120px" />
+            </div>
+          </div>
+          <p className="mt-2 text-[13px] text-moss">AI Skills Lab CoE, KIET</p>
+        </div>
+        <div>
+          <p className="label text-moss">Title sponsor</p>
+          <a
+            href={event.clothsyUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="cut-sm mt-3 flex h-16 items-center justify-center bg-violet px-4 transition-colors hover:bg-violet-deep"
+          >
+            <Image src={logos.clothsy} alt="Clothsy AI" className="h-11 w-auto" sizes="130px" />
+          </a>
+          <p className="mt-2 text-[13px] text-moss">See yourself in every outfit.</p>
+        </div>
+        <div>
+          <p className="label text-moss">Powered by</p>
+          <a href={event.fabricvtonUrl} target="_blank" rel="noopener noreferrer" className={`${tile} mt-3`}>
+            <Image src={logos.fabricvton} alt="FabricVTON" className="h-8 w-auto" sizes="130px" />
+          </a>
+          <p className="mt-2 text-[13px] text-moss">Virtual try-on technology</p>
+        </div>
+        <div className="col-span-2 lg:col-span-1">
+          <p className="label text-moss">Supporting partners</p>
+          <div className="mt-3 flex gap-2">
+            <div className={`${tile} flex-1`}>
+              <Image src={logos.hp} alt="HP" className="size-11" sizes="44px" />
+            </div>
+            <div className={`${tile} flex-1`}>
+              <Image src={logos.intel} alt="Intel" className="h-8 w-auto" sizes="90px" />
+            </div>
+          </div>
+          <p className="mt-2 text-[13px] text-moss">Supporting the AI Skills Lab CoE</p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function About() {
   return (
     <section id="about" className={`${section} border-t border-forest/10`}>
@@ -108,6 +164,10 @@ export function About() {
               Hack the Fashion brings together developers, designers and fashion minds for 24 hours
               to build working prototypes that make fashion more personalised, accessible, efficient
               and sustainable.
+            </p>
+            <p className="text-[15px]">
+              Organised by the AI Skills Lab CoE at KIET, with supporting partners HP and Intel.
+              Title sponsor Clothsy AI, powered by FabricVTON, sets the fashion-AI challenges.
             </p>
           </div>
         </div>
