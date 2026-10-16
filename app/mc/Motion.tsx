@@ -378,3 +378,131 @@ function sparkle(row: HTMLElement) {
     );
   }
 }
+
+const PARTICLE_COLORS = ["#b9a9ff", "#7a4cff", "#fcdc5f", "#e6d6ff", "#5ff2f2"];
+const BREAK_COLORS = ["#8a5a32", "#6e6e78", "#5aa83a", "#7a4cff", "#fcdc5f", "#b9a9ff"];
+
+/**
+ * Page-wide effects. Scroll: an XP bar fills along the bottom with the level
+ * counting sections. Pointer (fine
+ * pointers only): a trail of pixel particles, a block-break burst on click,
+ * buttons that lean towards the cursor, and a hero backdrop that follows it.
+ */
+export function PageFx() {
+  const bar = useRef<HTMLDivElement>(null);
+  const level = useRef<HTMLSpanElement>(null);
+  const fx = useRef<HTMLDivElement>(null);
+
+  useGSAP(() => {
+    const sections = [...document.querySelectorAll<HTMLElement>("main section")];
+    // XP bar runs in every mode: it reports position, it isn't decoration.
+    ScrollTrigger.create({
+      start: 0,
+      end: "max",
+      onUpdate: (st) => {
+        bar.current!.style.setProperty("--xp", st.progress.toFixed(4));
+        const mid = innerHeight / 2;
+        const lv = sections.filter((s) => s.getBoundingClientRect().top < mid).length - 1;
+        level.current!.textContent = String(Math.max(0, lv));
+      },
+    });
+
+    const mm = gsap.matchMedia();
+    mm.add(`${MOTION} and (pointer: fine)`, () => {
+      const layer = fx.current!;
+      let alive = 0;
+      let last = 0;
+      const spawn = (x: number, y: number, colors: string[], burst: boolean) => {
+        if (alive > 70) return;
+        alive++;
+        const p = document.createElement("span");
+        p.className = "mc-particle";
+        p.style.background = colors[(Math.random() * colors.length) | 0];
+        const size = burst ? gsap.utils.random(8, 14, 1) : gsap.utils.random(6, 10, 1);
+        gsap.set(p, { x, y, width: size, height: size });
+        layer.appendChild(p);
+        gsap.to(p, {
+          x: x + gsap.utils.random(burst ? -70 : -14, burst ? 70 : 14),
+          y: y + (burst ? gsap.utils.random(-70, 40) : gsap.utils.random(10, 40)),
+          opacity: 0,
+          scale: 0.3,
+          duration: burst ? gsap.utils.random(0.6, 1) : gsap.utils.random(0.8, 1.2),
+          ease: burst ? "power2.out" : "power1.in",
+          onComplete: () => {
+            p.remove();
+            alive--;
+          },
+        });
+        // Burst pieces fall like broken block bits.
+        if (burst) gsap.to(p, { y: `+=${gsap.utils.random(60, 120)}`, duration: 0.9, ease: "power2.in", delay: 0.15 });
+      };
+      const move = (e: PointerEvent) => {
+        const now = performance.now();
+        if (now - last < 28) return;
+        last = now;
+        spawn(e.clientX, e.clientY, PARTICLE_COLORS, false);
+      };
+      const down = (e: PointerEvent) => {
+        for (let i = 0; i < 12; i++) spawn(e.clientX, e.clientY, BREAK_COLORS, true);
+      };
+
+      // Buttons lean a little towards the cursor.
+      const offs: (() => void)[] = [];
+      document.querySelectorAll<HTMLElement>(".mc-btn").forEach((btn) => {
+        const x = gsap.quickTo(btn, "x", { duration: 0.35, ease: "power3" });
+        const y = gsap.quickTo(btn, "y", { duration: 0.35, ease: "power3" });
+        const over = (e: PointerEvent) => {
+          const r = btn.getBoundingClientRect();
+          x((e.clientX - r.left - r.width / 2) * 0.18);
+          y((e.clientY - r.top - r.height / 2) * 0.3);
+        };
+        const out = () => {
+          x(0);
+          y(0);
+        };
+        btn.addEventListener("pointermove", over);
+        btn.addEventListener("pointerleave", out);
+        offs.push(() => {
+          btn.removeEventListener("pointermove", over);
+          btn.removeEventListener("pointerleave", out);
+        });
+      });
+
+      // Hero backdrop follows the mouse for depth.
+      const depth = document.querySelector<HTMLElement>(".mc-hero-depth");
+      const hx = depth && gsap.quickTo(depth, "x", { duration: 1.2, ease: "power2" });
+      const hy = depth && gsap.quickTo(depth, "y", { duration: 1.2, ease: "power2" });
+      const look = (e: PointerEvent) => {
+        if (!hx || !hy || scrollY > innerHeight) return;
+        hx((e.clientX / innerWidth - 0.5) * -40);
+        hy((e.clientY / innerHeight - 0.5) * -24);
+      };
+
+      addEventListener("pointermove", move, { passive: true });
+      addEventListener("pointermove", look, { passive: true });
+      addEventListener("pointerdown", down, { passive: true });
+      return () => {
+        removeEventListener("pointermove", move);
+        removeEventListener("pointermove", look);
+        removeEventListener("pointerdown", down);
+        offs.forEach((f) => f());
+        layer.replaceChildren();
+      };
+    });
+    return () => mm.revert();
+  });
+
+  return (
+    <>
+      <div ref={bar} aria-hidden="true" className="mc-xpbar">
+        <span ref={level} className="mc-xplevel mc-font">
+          0
+        </span>
+        <div className="mc-xp">
+          <span />
+        </div>
+      </div>
+      <div ref={fx} aria-hidden="true" className="mc-fx" />
+    </>
+  );
+}

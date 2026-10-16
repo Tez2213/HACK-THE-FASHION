@@ -3,6 +3,7 @@ import { Judges, Judging, Schedule, TimelineSection } from "./Event";
 import { Faq, FinalCta, Footer, Rules, Sponsors, Submission, Venue } from "./Info";
 import { About, Hero, Prizes, Tracks } from "./Intro";
 import { McNav } from "./McNav";
+import { PageFx } from "./Motion";
 
 /** Block-world redesign preview. Same content as the homepage, from app/lib/event.ts. */
 export default function McHome() {
@@ -33,6 +34,7 @@ export default function McHome() {
       </main>
       <Footer />
       <RevealObserver />
+      <PageFx />
     </>
   );
 }

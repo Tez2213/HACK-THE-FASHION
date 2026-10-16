@@ -24,7 +24,10 @@ export function Hero() {
   return (
     <section id="top" className="relative flex min-h-[100svh] flex-col overflow-hidden bg-[#0d0a16]">
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-        <div className="mc-panorama" />
+        {/* PageFx shifts this with the mouse; the panorama inside pans on its own */}
+        <div className="mc-hero-depth absolute inset-0">
+          <div className="mc-panorama" />
+        </div>
         <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgb(13_10_22/0.7),rgb(13_10_22/0.15)_30%,rgb(13_10_22/0.3)_70%,rgb(13_10_22/0.85))]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_45%_at_50%_45%,rgb(95_37_255/0.35),transparent_70%)]" />
         {motes.map((left, i) => (

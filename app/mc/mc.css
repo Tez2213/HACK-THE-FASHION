@@ -1174,6 +1174,52 @@
   pointer-events: none;
 }
 
+/* ------------------------------------------------------- page effects */
+/* XP bar along the bottom of the screen: scroll progress, level = section. */
+.mc-xpbar {
+  position: fixed;
+  left: 50%;
+  bottom: 10px;
+  z-index: 45;
+  width: min(560px, calc(100vw - 32px));
+  translate: -50% 0;
+  pointer-events: none;
+}
+.mc-xpbar .mc-xp {
+  height: 10px;
+  box-shadow: 0 0 0 2px rgb(0 0 0 / 0.5), 0 4px 10px rgb(0 0 0 / 0.4);
+}
+.mc-xpbar .mc-xp > span {
+  transform-origin: left;
+  transform: scaleX(var(--xp, 0));
+}
+.mc-xplevel {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  translate: -50% 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #80ff20;
+  text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000;
+}
+/* Pointer particles, placed and animated by PageFx. */
+.mc-fx {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  overflow: hidden;
+  pointer-events: none;
+}
+.mc-particle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  will-change: transform, opacity;
+}
+
 /* --------------------------------------------------- banners & pedestals */
 /* Hanging wool banner with a stepped swallowtail, like the ones in the halls. */
 .mc-banner {
