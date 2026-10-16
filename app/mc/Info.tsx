@@ -5,6 +5,7 @@ import { Instagram, LinkedIn, Mail, Phone } from "../components/Icons";
 import { Tbc } from "../components/Tbc";
 import { bring, eligibility, event, faqs, registrationOpen, rules, submission } from "../lib/event";
 import { logos } from "../lib/logos";
+import { RulesMotion, SubmissionMotion } from "./Motion";
 import { container, delay, Heading, Item, McRegister, Section, Sprite, type ItemName } from "./ui";
 
 /* ------------------------------------------------------------- Sponsors */
@@ -176,130 +177,158 @@ export function Sponsors() {
 }
 
 /* ---------------------------------------------------------------- Rules */
+const conduct = [
+  "Be respectful and inclusive.",
+  "Harassment of any kind is not tolerated.",
+  "Look after the venue and equipment.",
+  "Organisers may remove anyone who breaks these rules.",
+];
+
+/**
+ * War-room board: eligibility as a checklist that ticks itself, the code of
+ * conduct as moderator chat, and the rules as paper notes pinned to an oak
+ * board. Motion in RulesMotion (GSAP).
+ */
 export function Rules() {
   return (
     <Section id="rules" tx="mc-photo bg-rules" wash="wash-55">
-      <div className={container}>
-        <Heading
-          index="10"
-          label="Rules"
-          title={
-            <>
-              Play it <em>fair</em>
-            </>
-          }
-        />
+      <RulesMotion>
+        <div className={container}>
+          <Heading
+            index="10"
+            label="Rules"
+            title={
+              <>
+                Play it <em>fair</em>
+              </>
+            }
+          />
 
-        <div className="mt-12 grid gap-6 lg:grid-cols-[1fr_1.4fr] lg:gap-3">
-          <article data-reveal className="mc-book mc-from-left px-7 py-9 md:px-10">
-            <h3 className="text-2xl font-bold uppercase">
-              Eligibility
-              <Tbc />
+          <div className="mt-12 grid gap-6 lg:grid-cols-2">
+            <article data-reveal className="mc-tooltip p-6 md:p-8">
+              <h3 className="mc-tooltip-title text-[20px] text-[#ffff7f] uppercase">
+                Player requirements
+                <Tbc />
+              </h3>
+              <ul className="mt-5 space-y-4">
+                {eligibility.map((e) => (
+                  <li key={e} className="flex gap-3.5">
+                    <span aria-hidden="true" className="mc-check">
+                      <span className="mc-tick">✔</span>
+                    </span>
+                    <span className="text-white/90">{e}</span>
+                  </li>
+                ))}
+              </ul>
+            </article>
+
+            <article id="code-of-conduct" data-reveal style={delay(120)} className="mc-chat p-6 md:p-8">
+              <h3 className="mc-font text-[20px] font-bold text-white uppercase [text-shadow:2px_2px_0_rgb(0_0_0/0.6)]">
+                Code of conduct
+              </h3>
+              <ul className="mc-font mt-5 space-y-2.5 text-[15px] leading-snug">
+                {conduct.map((c) => (
+                  <li key={c} className="mc-chat-line">
+                    <span className="text-[#ff5555]">&lt;Moderator&gt;</span> <span className="text-white">{c}</span>
+                  </li>
+                ))}
+              </ul>
+            </article>
+          </div>
+
+          {/* Notes pinned to the board */}
+          <div data-reveal className="mc-board mt-10 p-5 md:p-8">
+            <h3 className="mc-font text-[20px] font-bold text-[#fcdc5f] uppercase [text-shadow:2px_2px_0_rgb(0_0_0/0.6)]">
+              The rules
             </h3>
-            <ul className="mt-4 space-y-3">
-              {eligibility.map((e) => (
-                <li key={e} className="flex gap-3">
-                  <span aria-hidden="true" className="mt-[0.55em] size-2 shrink-0 bg-[#8a3f22]" />
-                  {e}
-                </li>
-              ))}
-            </ul>
-            <div id="code-of-conduct" className="mt-8 border-t-2 border-dashed border-[#c9b88c] pt-6">
-              <h3 className="text-2xl font-bold uppercase">Code of Conduct</h3>
-              <p className="mt-3 leading-relaxed">
-                Be respectful and inclusive. Harassment of any kind is not tolerated. Look after the venue and equipment.
-                Organisers may remove anyone who breaks these rules.
-              </p>
-            </div>
-          </article>
-
-          <article data-reveal style={delay(150)} className="mc-book mc-book-right mc-from-right px-7 py-9 md:px-10">
-            <h3 className="text-2xl font-bold uppercase">Rules</h3>
-            <ol className="mt-4 grid gap-x-8 md:grid-cols-2">
+            <ol className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {rules.map((r, i) => (
-                <li key={r} className="flex gap-3 border-b-2 border-dashed border-[#d9c796] py-3">
-                  <span className="mc-font font-bold text-[#8a3f22]">{String(i + 1).padStart(2, "0")}</span>
-                  <span className="text-[15px]">
+                <li key={r} className="mc-note" style={{ ["--tilt" as string]: `${[-2.5, 1.8, -1.2, 2.6][i % 4]}deg` }}>
+                  <span aria-hidden="true" className="mc-pin" />
+                  <span className="mc-font text-3xl font-bold text-[#8a3f22]">{String(i + 1).padStart(2, "0")}</span>
+                  <p className="mt-2 text-[15px] leading-snug">
                     {r}
                     {i === 5 && <Tbc />}
-                  </span>
+                  </p>
                 </li>
               ))}
             </ol>
-            <Link href="/terms" className="mc-font mt-6 inline-block text-[15px] font-bold text-[#4a16d9] underline underline-offset-4">
+            <Link href="/terms" className="mc-btn mc-btn-wood mt-8">
               Read the full Terms &amp; Conditions ▸
             </Link>
-          </article>
+          </div>
         </div>
-      </div>
+      </RulesMotion>
     </Section>
   );
 }
 
 /* ----------------------------------------------------------- Submission */
 const submissionItems: ItemName[] = ["diamond", "chest", "painting", "book", "paper"];
-// Crafting grid positions (0–8) for the five submission items.
-const recipe = [0, 1, 4, 6, 8];
 
+/**
+ * Redstone circuit through the forge: a signal runs along the wire, lighting
+ * each deliverable's lamp in turn, and ends in the crafted project.
+ * Motion in SubmissionMotion (GSAP); without it every lamp is simply lit.
+ */
 export function Submission() {
   return (
     <Section id="submission" tx="mc-photo bg-submission" wash="wash-40">
-      <div className={container}>
-        <div className="grid gap-10 lg:grid-cols-[1fr_1.3fr] lg:gap-14">
-          <div>
-            <Heading
-              index="11"
-              label="Submission"
-              title={
-                <>
-                  Ship it before the <em>freeze</em>
-                </>
-              }
-              intro="Each team must submit all five items before code freeze. Combine them and you've crafted a project."
-            />
-            <p data-reveal className="mc-badge mt-8 text-[17px]">Code freeze · 3 Nov · 10:00 AM IST</p>
-            <p data-reveal className="mc-lead mt-6 text-[15px]">
-              Submission platform: Devfolio / Unstop / Google Form
+      <SubmissionMotion>
+        <div className={container}>
+          <Heading
+            center
+            index="11"
+            label="Submission"
+            title={
+              <>
+                Ship it before the <em>freeze</em>
+              </>
+            }
+            intro="Each team must submit all five items before code freeze. Power every lamp and you've crafted a project."
+          />
+          <div data-reveal className="mt-8 flex flex-wrap items-center justify-center gap-4">
+            <p className="mc-badge text-[17px]">Code freeze · 3 Nov · 10:00 AM IST</p>
+            <p className="mc-lead text-[15px]">
+              Platform: Devfolio / Unstop / Google Form
               <Tbc />
             </p>
           </div>
 
-          <div data-reveal style={delay(100)} className="mc-gui p-5 md:p-7">
-            <p className="mc-gui-title">Crafting</p>
-            <div aria-hidden="true" className="mt-3 flex items-center justify-center gap-4 sm:gap-6">
-              <div className="grid grid-cols-3 gap-1">
-                {Array.from({ length: 9 }, (_, i) => {
-                  const at = recipe.indexOf(i);
-                  return (
-                    <span key={i} className="mc-slot size-12 sm:size-14">
-                      {at !== -1 && <Item name={submissionItems[at]} size={32} />}
-                    </span>
-                  );
-                })}
-              </div>
-              <span className="mc-font text-4xl text-[#8b8b8b]">➜</span>
-              <span className="mc-slot size-16 sm:size-20">
-                <Item name="shirt" size={44} />
-              </span>
+          <div className="mc-circuit relative mt-14">
+            <div aria-hidden="true" className="mc-wire">
+              <span className="mc-wire-on" />
             </div>
-            <ol className="mt-6 space-y-2">
-              {submission.map((s, i) => (
-                <li key={s.title} className="flex items-center gap-3">
-                  <span className="mc-slot size-10 shrink-0">
-                    <Item name={submissionItems[i]} size={24} />
+            <ol className="relative grid gap-6 lg:grid-cols-5 lg:gap-4">
+              {submission.map((st, i) => (
+                <li key={st.title} data-on="" className="mc-lamp-card">
+                  <span aria-hidden="true" className="mc-lamp">
+                    <Item name={submissionItems[i]} size={36} className="mc-lamp-item" />
                   </span>
-                  <div>
-                    <h3 className="mc-gui-title text-[16px]">
-                      {i + 1}. {s.title}
+                  <div className="flex-1 bg-black/60 px-4 py-3 lg:mt-4 lg:w-full lg:text-center">
+                    <p className="mc-font text-[12px] tracking-[0.2em] text-[#ff7a7a] uppercase">Item {i + 1} of 5</p>
+                    <h3 className="mc-font mt-1 text-[17px] leading-tight font-bold [text-shadow:2px_2px_0_rgb(0_0_0/0.5)]">
+                      {st.title}
                     </h3>
-                    <p className="text-[14px] text-[#3f3f3f]">{s.detail}</p>
+                    <p className="mt-1.5 text-[14px] leading-snug text-white/80">{st.detail}</p>
                   </div>
                 </li>
               ))}
             </ol>
           </div>
+
+          <div className="mc-crafted mx-auto mt-12 flex max-w-[420px] items-center gap-5 p-5">
+            <span className="mc-slot size-20 shrink-0">
+              <Item name="shirt" size={52} />
+            </span>
+            <div>
+              <p className="mc-font text-[12px] tracking-[0.2em] text-[#80e030] uppercase">Output</p>
+              <p className="mc-font text-[22px] font-bold text-[#ffff7f] [text-shadow:2px_2px_0_rgb(0_0_0/0.6)]">Project crafted!</p>
+              <p className="text-[14px] text-white/80">All five in by code freeze to enter judging.</p>
+            </div>
+          </div>
         </div>
-      </div>
+      </SubmissionMotion>
     </Section>
   );
 }

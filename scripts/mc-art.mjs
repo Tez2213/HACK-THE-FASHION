@@ -613,83 +613,6 @@ function outlined(g) {
   );
 }
 
-// Concentric pixel rings, decoration beside the hero.
-art.rings = Array.from({ length: 64 }, (_, y) =>
-  Array.from({ length: 64 }, (_, x) => {
-    const d = Math.hypot(x - 31.5, y - 31.5);
-    return [10, 19, 29].some((r) => Math.abs(d - r) < 0.9) ? "#7a4cff" : null;
-  }),
-);
-
-/* --------------------------------------------------- hero: coder beacon */
-// Coder in a violet hoodie and headphones, typing on a Clothsy laptop while
-// sitting on the beacon. Two frames (hands alternate) for the typing loop.
-function coder(frame) {
-  const { g, rect } = canvas(24, 24);
-  rect(6, 1, 17, 3, "h"); // hair
-  rect(5, 0, 18, 0, "K"); // headphone band and cups
-  rect(4, 1, 4, 3, "K");
-  rect(19, 1, 19, 3, "K");
-  rect(6, 4, 17, 10, "s"); // face
-  rect(6, 4, 6, 5, "h");
-  rect(17, 4, 17, 5, "h");
-  rect(3, 4, 5, 8, "K");
-  rect(18, 4, 20, 8, "K");
-  rect(4, 5, 4, 7, "v");
-  rect(19, 5, 19, 7, "v");
-  rect(7, 6, 10, 7, "G"); // glasses catching the screen light
-  rect(13, 6, 16, 7, "G");
-  rect(11, 6, 12, 6, "G");
-  rect(8, 6, 9, 6, "L");
-  rect(14, 6, 15, 6, "L");
-  rect(11, 9, 12, 9, "m");
-  rect(7, 10, 16, 10, "S"); // chin lit by the screen
-  rect(4, 11, 19, 16, "a"); // hoodie
-  rect(7, 11, 16, 11, "A");
-  rect(10, 12, 10, 13, "w");
-  rect(13, 12, 13, 13, "w");
-  const up = frame === "a";
-  rect(0, 13, 2, up ? 15 : 16, "a"); // arms reaching to the keys
-  rect(0, up ? 16 : 17, 2, up ? 17 : 18, "s");
-  rect(21, 13, 23, up ? 16 : 15, "a");
-  rect(21, up ? 17 : 16, 23, up ? 18 : 17, "s");
-  rect(3, 13, 20, 19, "k"); // laptop lid, glowing top edge
-  rect(3, 13, 20, 13, "g");
-  rect(3, 14, 3, 19, "l");
-  rect(3, 20, 20, 20, "B");
-  rect(10, 15, 12, 15, "w"); // Clothsy C on the lid
-  rect(10, 16, 10, 17, "w");
-  rect(10, 18, 13, 18, "w");
-  rect(2, 21, 21, 22, "p"); // crossed legs
-  rect(11, 21, 12, 21, "P");
-  rect(1, 22, 3, 23, "z");
-  rect(20, 22, 22, 23, "z");
-  return sprite(outlined(g), {
-    o: O, K: "#2b2b33", h: "#3a2618", s: "#e0ac7e", S: "#c8a0d8", v: "#7a4cff", G: "#1b1b1b", L: "#d9ccff",
-    m: "#a0522d", a: "#6a3cff", A: "#4a16d9", w: "#ffffff", k: "#3a3a46", g: "#b9a9ff", l: "#55556a",
-    B: "#9a9aa8", p: "#2f3a4f", P: "#232c3d", z: "#1b1b1b",
-  });
-}
-art.coder_type = coder("a").map((row, y) => [...row, ...coder("b")[y]]); // 2-frame sheet
-
-// Beacon block: glass casing around a glowing amethyst core.
-art.beacon = (() => {
-  const { g, rect } = canvas(16, 16);
-  rect(0, 0, 15, 15, "g");
-  rect(1, 1, 14, 14, "G");
-  rect(0, 0, 15, 0, "l");
-  rect(0, 0, 0, 15, "l");
-  rect(3, 3, 12, 12, "k");
-  rect(4, 4, 11, 11, "v");
-  rect(5, 5, 10, 10, "V");
-  rect(6, 6, 9, 9, "p");
-  rect(7, 7, 8, 8, "w");
-  for (const [x, y] of [[2, 5], [13, 9], [5, 13], [10, 2]]) g[y][x] = "l"; // glass glints
-  return sprite(g.map((r) => r.join("")), {
-    g: "#9fd6e0", G: "#c8eef2", l: "#ffffff", k: "#1d1240", v: "#4a16d9", V: "#6a3cff", p: "#b9a9ff", w: "#ffffff",
-  });
-})();
-
 /* --------------------------------------------------------------- mascot */
 // Blocky tailor (violet beret, terracotta jacket, measuring tape) for the
 // "Join now" walk-on. Poses: "a"/"b" walking frames, "hold" arms raised.
@@ -732,46 +655,6 @@ function tailor(pose) {
 art.tailor_walk = tailor("a").map((row, y) => [...row, ...tailor("b")[y]]); // 2-frame sheet
 art.tailor_hold = tailor("hold");
 
-/* ----------------------------------------------------- about: professor */
-// Guide in a mortarboard who points a stick at the About pages. Frame "a"
-// points up-left, "b" straight left.
-function professor(frame) {
-  const { g, rect } = canvas(28, 30);
-  rect(13, 0, 26, 1, "K"); // mortarboard and tassel
-  rect(16, 2, 23, 3, "K");
-  g[2][26] = g[3][26] = g[4][26] = "y";
-  rect(16, 4, 23, 10, "s"); // head
-  rect(16, 4, 16, 6, "h");
-  rect(23, 4, 23, 6, "h");
-  g[7][18] = g[7][21] = "k";
-  rect(19, 9, 20, 9, "m");
-  rect(15, 11, 24, 24, "b"); // blazer, shirt and tie
-  rect(17, 11, 22, 12, "l");
-  rect(19, 11, 20, 15, "t");
-  rect(19, 12, 20, 16, "r");
-  rect(25, 12, 26, 21, "b"); // resting arm
-  rect(25, 22, 26, 23, "s");
-  if (frame === "a") {
-    rect(12, 12, 14, 14, "b");
-    rect(9, 10, 11, 12, "b");
-    rect(7, 9, 9, 11, "s");
-    for (let i = 0; i <= 6; i++) g[8 - i][6 - i] = i === 6 ? "w" : "S"; // stick, white tip
-  } else {
-    rect(9, 13, 14, 15, "b");
-    rect(7, 13, 8, 15, "s");
-    rect(1, 14, 6, 14, "S");
-    g[14][0] = "w";
-  }
-  rect(16, 25, 19, 28, "p"); // legs and shoes
-  rect(20, 25, 23, 28, "p");
-  rect(15, 29, 19, 29, "z");
-  rect(20, 29, 24, 29, "z");
-  return sprite(outlined(g), {
-    o: O, K: "#1b1b22", y: "#fcdc5f", s: "#e0ac7e", h: "#d9d9d9", k: "#1b1b1b", m: "#a0522d",
-    b: "#2f4a3a", l: "#a8b89a", t: "#f3eee3", r: "#b5583a", S: "#8a6a3d", w: "#ffffff", p: "#1f3227", z: "#1b1b1b",
-  });
-}
-art.professor = professor("a").map((row, y) => [...row, ...professor("b")[y]]); // 2-frame sheet
 
 /* ------------------------------------------------- tracks: unicorn rider */
 // Rider on a unicorn, side view facing right, two gallop frames.
@@ -907,6 +790,36 @@ art.item_soap = item((g, rect) => {
   rect(7, 0, 8, 1, "w");
   rect(10, 2, 11, 3, "w");
 }, { p: "#ff8fd8", h: "#ffc2ec", d: "#d65fb0", w: "#d8f6ff" });
+
+// Redstone lamp, off and on: noisy glass split by a dark frame cross.
+function lamp(colors, frame, seed) {
+  return noise(colors, seed).map((row, y) => row.map((c, x) => (x % 15 === 0 || y % 15 === 0 || x === 7 || y === 7 ? frame : c)));
+}
+art.lamp_off = lamp(["#5a3a20", "#4a2e18", "#6b4526", "#3b2414"], "#2a170b", 301);
+art.lamp_on = lamp(["#f7c25a", "#ffe08a", "#e9a43a", "#fff2c2"], "#8a5a1f", 302);
+
+// Mentor villager: bald head, unibrow, long nose, violet robe, arms folded.
+art.villager = (() => {
+  const { g, rect } = canvas(14, 22);
+  rect(2, 0, 11, 9, "s"); // head
+  rect(2, 0, 11, 1, "h");
+  rect(3, 3, 10, 3, "b"); // unibrow
+  rect(4, 4, 4, 4, "w");
+  rect(5, 4, 5, 4, "e");
+  rect(8, 4, 8, 4, "e");
+  rect(9, 4, 9, 4, "w");
+  rect(6, 4, 7, 8, "n"); // nose
+  rect(6, 8, 7, 8, "N");
+  rect(1, 10, 12, 21, "r"); // robe
+  rect(1, 10, 12, 10, "R");
+  rect(6, 11, 7, 21, "R");
+  rect(1, 13, 12, 15, "a"); // folded arms
+  rect(5, 13, 8, 15, "s");
+  return sprite(outlined(g), {
+    o: O, s: "#c49373", h: "#a87858", b: "#4a3424", w: "#ffffff", e: "#2f8a3a", n: "#b07a5c", N: "#8f5e44",
+    r: "#5f25ff", R: "#4a16d9", a: "#7a4cff",
+  });
+})();
 
 /* ------------------------------------------------------------------ cursors */
 const curPal = { o: "#101010", w: "#ffffff" };

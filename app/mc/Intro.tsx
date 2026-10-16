@@ -1,180 +1,126 @@
-import { Fragment, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { Tbc } from "../components/Tbc";
 import type { TrackIcon } from "../lib/event";
 import { event, prizes, REGISTER_URL, registrationOpen, specialAwards, stats, tracks } from "../lib/event";
 import { McCountdown } from "./McCountdown";
+import { AboutMotion, TracksMotion } from "./Motion";
 import { container, delay, Heading, Item, McRegister, Section, Sprite, type ItemName } from "./ui";
 
 const b = (n: number) => `calc(var(--b) * ${n})`;
 
 /* ----------------------------------------------------------------- Hero */
-// Sparks rise either side of the coder (lefts are relative to the beacon).
-const sparks = [
-  { left: "-70%", delay: "0s", color: "#fcdc5f" },
-  { left: "150%", delay: "-0.8s", color: "#b9a9ff" },
-  { left: "-40%", delay: "-1.6s", color: "#ffffff" },
-  { left: "125%", delay: "-2.2s", color: "#fcdc5f" },
-  { left: "-95%", delay: "-1.1s", color: "#b9a9ff" },
-  { left: "175%", delay: "-2.7s", color: "#ffffff" },
-];
-const kw = (t: string) => <span className="text-[#b9a9ff]">{t}</span>;
-const code: ReactNode[] = [
-  <Fragment key="1">{kw("const")} look = scan(user);</Fragment>,
-  <Fragment key="2">{kw("const")} fit = tryOn(look);</Fragment>,
-  <Fragment key="3">
-    {kw("if")} (fit.score {">"} 0.95) {"{"}
-  </Fragment>,
-  <Fragment key="4">
-    {"  "}ship(<span className="text-[var(--gold)]">&quot;Hack the Fashion&quot;</span>);
-  </Fragment>,
-  <Fragment key="5">{"}"}</Fragment>,
-  <span key="6" className="text-white/45">
-    {"// 24h to build ▸"}
-  </span>,
-];
+// Rotating yellow splash text, like the title screen's.
+const splashes = ["24 hours of code!", "Now with virtual try-on!", `${event.prizePool} in loot!`, "Also try FabricVTON!", "Made at KIET!"];
+// Amethyst motes drifting up the cave.
+const motes = [6, 14, 23, 31, 44, 57, 66, 74, 83, 92];
 
 /**
- * Giant block wordmark over the amethyst-cave backdrop, with a coder
- * typing on a Clothsy laptop atop a beacon whose beam shoots up through the
- * letters. Below: slanted date bars, an F3-style status panel, and the tailor
- * who walks on to flip a "Join now" sign.
+ * Minecraft title screen: the cave backdrop pans slowly like the menu
+ * panorama, the FASHION logo drops in block by block with a splash text
+ * pulsing on its corner, then menu buttons and the countdown. The tailor
+ * walks on along the bottom to flip a "Join now" sign. Fills the screen.
  */
 export function Hero() {
   return (
-    <section id="top" className="relative flex min-h-[min(100svh,1100px)] flex-col overflow-hidden bg-[#0d0a16]">
+    <section id="top" className="relative flex min-h-[100svh] flex-col overflow-hidden bg-[#0d0a16]">
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 bg-[url(/mc/bg/hero.webp)] bg-cover bg-center" />
-        <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgb(13_10_22/0.75),transparent_28%,transparent_65%,rgb(13_10_22/0.85))]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_42%_52%_at_50%_60%,rgb(95_37_255/0.42),transparent_70%)]" />
-        <Sprite
-          src="rings"
-          w={64}
-          h={64}
-          className="absolute top-[40%] -left-[180px] h-auto w-[384px] opacity-30 md:-left-[110px]"
-        />
-        <Sprite
-          src="rings"
-          w={64}
-          h={64}
-          className="absolute top-[14%] -right-[150px] hidden h-auto w-[256px] opacity-15 lg:block"
-        />
+        <div className="mc-panorama" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgb(13_10_22/0.7),rgb(13_10_22/0.15)_30%,rgb(13_10_22/0.3)_70%,rgb(13_10_22/0.85))]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_45%_at_50%_45%,rgb(95_37_255/0.35),transparent_70%)]" />
+        {motes.map((left, i) => (
+          <span key={left} className="mc-firefly" style={{ left: `${left}%`, animationDelay: `${i * -1.3}s` }} />
+        ))}
       </div>
 
-      <div className="relative z-10 mx-auto flex w-full max-w-[1400px] flex-1 flex-col justify-center px-4 pt-28 pb-10 sm:px-6 xl:pb-[150px]">
-        <h1 className="hero-in text-center">
-          <span className="mc-font block text-[clamp(18px,2.6vw,36px)] font-bold tracking-[0.4em] text-[var(--gold)] uppercase [text-shadow:3px_3px_0_rgb(0_0_0/0.5)]">
+      <div className="relative z-10 mx-auto flex w-full max-w-[1200px] flex-1 flex-col items-center justify-center px-4 pt-28 pb-[270px] sm:px-6 md:pb-[320px] lg:pb-[calc(var(--b)*2)]">
+        <h1 className="relative text-center">
+          <span className="hero-in mc-font block text-[clamp(16px,2.4vw,32px)] font-bold tracking-[0.45em] text-[var(--gold)] uppercase [text-shadow:3px_3px_0_rgb(0_0_0/0.5)]">
             Hack the
           </span>
-          <span className="mc-wordmark mc-font block text-[20vw] leading-[0.82] font-bold uppercase sm:text-[17vw] xl:text-[min(17vw,280px)]">
-            Fashion
+          <span className="mc-font block text-[19vw] leading-[0.85] font-bold uppercase sm:text-[15vw] lg:text-[min(12.5vw,200px)]">
+            {"FASHION".split("").map((ch, i) => (
+              <span key={i} className="mc-wordmark mc-drop inline-block" style={{ animationDelay: `${120 + i * 70}ms` }}>
+                {ch}
+              </span>
+            ))}
+          </span>
+          {/* Splash text, pinned to the logo's corner */}
+          <span aria-hidden="true" className="mc-splash mc-font">
+            {splashes.map((t, i) => (
+              <span key={t} className="mc-splash-line" style={{ animationDelay: `${i * 3}s` }}>
+                {t}
+              </span>
+            ))}
           </span>
         </h1>
+        <p
+          className="hero-in mc-font mt-4 text-center text-[clamp(13px,1.4vw,18px)] tracking-[0.12em] text-white/90 uppercase [text-shadow:2px_2px_0_rgb(0_0_0/0.6)]"
+          style={{ ["--d" as string]: "600ms" }}
+        >
+          {event.dates} · 24-hour in-person hackathon at {event.venueShort}
+        </p>
 
-        {/* On xl: beacon centred, status panel in the right column, bars underneath. */}
-        <div className="xl:grid xl:grid-cols-[1fr_auto_1fr] xl:items-end">
-          {/* Coder on the beacon */}
-          <div
-            className="hero-in relative z-10 mx-auto -mt-[3vw] w-[min(44vw,220px)] xl:col-start-2 xl:row-start-1 xl:-mt-[150px] xl:w-[240px]"
-            style={{ ["--d" as string]: "120ms" }}
-          >
-            <span className="mc-coder relative z-10 mx-auto block aspect-square w-[78%]" />
-            <div className="relative mx-auto w-[36%]">
-              <span aria-hidden="true" className="mc-beam" />
-              {sparks.map((sp) => (
-                <span
-                  key={sp.left}
-                  aria-hidden="true"
-                  className="mc-spark z-20"
-                  style={{ left: sp.left, animationDelay: sp.delay, background: sp.color }}
-                />
-              ))}
-              <Sprite
-                src="beacon"
-                w={16}
-                h={16}
-                className="relative z-10 h-auto w-full drop-shadow-[0_0_24px_rgb(122_76_255/0.8)]"
-              />
-            </div>
-            <div aria-hidden="true" className="mx-auto flex w-[84%]">
-              {[0, 1, 2].map((i) => (
-                <span key={i} className="mc-tx tx-gold aspect-square flex-1 [--b:100%]" />
-              ))}
-            </div>
-            {/* Floating editor where the code types itself out */}
-            <div
-              aria-hidden="true"
-              className="mc-ide absolute top-[30%] right-[calc(100%+28px)] hidden w-[300px] xl:block"
-            >
-              <p className="mc-ide-bar mc-font">try-on.ts</p>
-              <pre className="mc-font px-4 py-3 text-[13px] leading-[22px] text-white/90">
-                {code.map((line, i) => (
-                  <span key={i} className="mc-ide-line" style={{ animationDelay: `${i * 0.9}s` }}>
-                    {line}
-                  </span>
-                ))}
-              </pre>
-            </div>
+        {/* Title-screen menu */}
+        <nav
+          aria-label="Get started"
+          className="hero-in mt-8 grid w-full max-w-[440px] gap-3"
+          style={{ ["--d" as string]: "750ms" }}
+        >
+          <McRegister className="mc-btn-lg w-full" />
+          <a href="#tracks" className="mc-btn mc-btn-lg w-full">
+            Explore the tracks
+          </a>
+          <div className="grid grid-cols-2 gap-3">
+            <a href="#schedule" className="mc-btn w-full">
+              Schedule
+            </a>
+            <a href="#sponsors" className="mc-btn w-full">
+              Sponsor us
+            </a>
           </div>
-
-          {/* Slanted info bars */}
-          <div
-            className="hero-in relative z-20 mt-4 flex flex-col gap-2 [filter:drop-shadow(0_8px_0_rgb(0_0_0/0.4))] sm:flex-row sm:justify-center sm:gap-3 xl:col-span-3 xl:row-start-2 xl:mt-3"
-            style={{ ["--d" as string]: "200ms" }}
-          >
-            <p className="mc-slant mc-font bg-violet px-9 py-3.5 text-center text-[clamp(18px,2.1vw,28px)] font-bold tracking-[0.12em] uppercase [text-shadow:3px_3px_0_rgb(0_0_0/0.35)]">
-              {event.dates}
-            </p>
-            <p className="mc-slant mc-tx tx-wool mc-font px-9 py-3.5 text-center text-[clamp(14px,1.45vw,20px)] leading-tight font-bold tracking-[0.08em] text-[#1f1a2e] uppercase [--b:32px] sm:content-center">
-              24-hour in-person hackathon at {event.venueShort}
-            </p>
-          </div>
-
-          <JoinWalker />
-
-          {/* Status panel, styled like the F3 debug screen */}
-          <aside
-            aria-label="Event status"
-            className="hero-in relative z-10 mx-auto mt-8 w-full max-w-[360px] border-2 border-white/15 bg-black/55 p-5 backdrop-blur-sm xl:col-start-3 xl:row-start-1 xl:-mt-10 xl:w-[300px] xl:justify-self-end"
-            style={{ ["--d" as string]: "260ms" }}
-          >
-            <p className="mc-font flex justify-between text-[12px] tracking-[0.2em] text-white/50 uppercase">
-              <span>HTF 2026 // F3</span>
-              <span className="text-[var(--gold)]">● {registrationOpen ? "Online" : "Loading"}</span>
-            </p>
-            <p className="mc-font mt-3 text-[30px] leading-none font-bold uppercase [text-shadow:3px_3px_0_rgb(0_0_0/0.5)]">
-              {registrationOpen ? "Registrations" : "Applications"}
-              <span className="block text-[var(--gold)]">{registrationOpen ? "are open" : "open soon"}</span>
-            </p>
-            <div className="mt-4">
-              <McCountdown compact />
-            </div>
-            <McRegister className="mt-4 w-full" />
-            <dl className="mc-font mt-4 grid grid-cols-[auto_1fr] gap-x-3 text-[12px] leading-5 text-white/55 xl:hidden">
-              <dt>Seed</dt>
-              <dd>HTF-2026</dd>
-              <dt>Biome</dt>
-              <dd>{event.venueShort}</dd>
-              <dt>Players</dt>
-              <dd>250 builders · 24 hours</dd>
-            </dl>
-          </aside>
+        </nav>
+        <div
+          className="hero-in mt-5 w-full max-w-[440px] border-2 border-white/15 bg-black/55 p-4 backdrop-blur-sm"
+          style={{ ["--d" as string]: "900ms" }}
+        >
+          <p className="mc-font mb-2 flex justify-between text-[12px] tracking-[0.15em] uppercase">
+            <span className="text-white/70">{registrationOpen ? "Registrations are open" : "Applications open soon"}</span>
+            <span className="text-[#80e030]">● 250 slots</span>
+          </p>
+          <McCountdown compact />
         </div>
       </div>
+
+      {/* Version and credit strings in the corners, above the ground */}
+      <p
+        aria-hidden="true"
+        className="mc-font absolute bottom-[calc(var(--b)+10px)] left-4 z-20 hidden text-[13px] text-white/80 [text-shadow:2px_2px_0_rgb(0_0_0/0.7)] lg:block"
+      >
+        Hack the Fashion 2026
+      </p>
+      <p
+        aria-hidden="true"
+        className="mc-font absolute right-4 bottom-[calc(var(--b)+10px)] z-20 hidden text-[13px] text-white/80 [text-shadow:2px_2px_0_rgb(0_0_0/0.7)] lg:block"
+      >
+        AI Skills Lab · KIET · Clothsy AI
+      </p>
+
+      <JoinWalker />
     </section>
   );
 }
 
 /**
  * The tailor walks in, raises a sign, flips it to "Join now", lowers it and
- * walks off, on a loop. On phones it sits under the date bars; on xl it walks
- * along the bottom edge of the hero, over whatever is there. Pure CSS;
+ * walks off, on a loop, along the bottom of the hero (on desktop it stops
+ * left of the menu instead of centre stage). Pure CSS;
  * decorative, since every Register button already leads to the same place.
  */
 function JoinWalker() {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none relative z-30 -mx-4 mt-6 h-[240px] overflow-hidden sm:-mx-6 md:h-[290px] xl:absolute xl:bottom-0 xl:left-1/2 xl:mx-0 xl:mt-0 xl:w-screen xl:-translate-x-1/2"
+      className="pointer-events-none absolute inset-x-0 bottom-0 z-30 h-[250px] overflow-hidden md:h-[300px]"
     >
       <div className="mc-ground absolute inset-x-0 bottom-0 h-[var(--b)]" />
       <div className="mc-walker absolute bottom-[var(--b)]">
@@ -209,109 +155,93 @@ function JoinWalker() {
 
 /* ---------------------------------------------------------------- About */
 const statIcons: ItemName[] = ["clock", "book", "emerald", "heart"];
-// Amethyst motes drifting up off the open book.
-const motes = [
-  { left: "8%", delay: "0s" },
-  { left: "22%", delay: "-2.1s" },
-  { left: "41%", delay: "-3.7s" },
-  { left: "58%", delay: "-1.2s" },
-  { left: "76%", delay: "-4.4s" },
-  { left: "91%", delay: "-2.9s" },
+
+const problem = [
+  "Online shoppers still can't see how clothes will look on them before they buy. Brands struggle with product discovery, personalisation, size-related returns, inventory planning and waste from overproduction.",
+  "Hack the Fashion brings together developers, designers and fashion minds for 24 hours to build working prototypes that make fashion more personalised, accessible, efficient and sustainable.",
 ];
 
-/** Professor who waves a pointer at the pages while a speech bubble walks through them. */
-function Guide() {
-  const lines = [
-    "Welcome, player! Here's your quest.",
-    "Page 1: the problem fashion still has.",
-    "Page 2: your quest log. 24h, 6 tracks.",
-    `The loot? ${event.prizePool} and internships.`,
-  ];
-  return (
-    <div data-reveal aria-hidden="true" className="order-last flex flex-col items-start gap-4 self-end lg:order-first">
-      <div className="mc-bubble mc-font grid max-w-[240px] text-[15px] leading-snug font-semibold">
-        {lines.map((l, i) => (
-          <span key={l} className="mc-bubble-line" style={{ animationDelay: `${i * 4}s` }}>
-            {l}
-          </span>
-        ))}
-      </div>
-      <span className="mc-prof block shrink-0" />
-    </div>
-  );
-}
-
+/**
+ * Enchanted study: the problem on a rune panel whose text decodes out of the
+ * enchanting-table alphabet, and the quest log as amethyst crystals that tilt,
+ * count up and burst XP orbs. Motion lives in AboutMotion (GSAP).
+ */
 export function About() {
   return (
     <Section id="about" tx="mc-photo bg-about" wash="wash-40">
-      <div className={container}>
-        <Heading
-          index="01"
-          label="About"
-          title={
-            <>
-              Fashion is evolving. The <em>tools</em> haven&apos;t caught up.
-            </>
-          }
-        />
+      <AboutMotion>
+        <div className={container}>
+          <Heading
+            index="01"
+            label="About"
+            title={
+              <>
+                Fashion is evolving. The <em>tools</em> haven&apos;t caught up.
+              </>
+            }
+          />
 
-        {/* Professor stands bottom-left, pointing his stick at an open spellbook */}
-        <div className="mt-12 grid gap-6 lg:grid-cols-[230px_1fr] lg:gap-4">
-          <Guide />
-          <div data-reveal className="mc-grimoire">
-            {motes.map((m) => (
-              <span key={m.left} aria-hidden="true" className="mc-mote" style={{ left: m.left, animationDelay: m.delay }} />
-            ))}
-            <span aria-hidden="true" className="mc-ribbon" />
-            <div className="mc-spread">
-          <article className="mc-page mc-page-left px-7 py-9 md:px-10 md:py-11">
-            <h3 className="text-2xl font-bold uppercase">The problem</h3>
-            <p className="mt-4 leading-relaxed">
-              Online shoppers still can&apos;t see how clothes will look on them before they buy. Brands struggle with
-              product discovery, personalisation, size-related returns, inventory planning and waste from
-              overproduction.
-            </p>
-            <p className="mt-4 leading-relaxed font-medium">
-              Hack the Fashion brings together developers, designers and fashion minds for 24 hours to build working
-              prototypes that make fashion more personalised, accessible, efficient and sustainable.
-            </p>
-            <p className="mt-4 text-[15px] leading-relaxed text-[#5a4428]">
-              Organised by the AI Skills Lab CoE at KIET, with supporting partners HP and Intel. Title sponsor Clothsy
-              AI, powered by FabricVTON, sets the fashion-AI challenges.
-            </p>
-            <p className="mc-font mt-8 text-right text-[13px] text-[#7a5d33]">Page 1 of 2</p>
-          </article>
-
-          <article className="mc-page mc-page-right px-7 py-9 md:px-10 md:py-11">
-            <h3 className="text-2xl font-bold uppercase">Quest log</h3>
-            <dl className="mt-6 grid grid-cols-2 gap-x-3 gap-y-5">
-              {stats.map((s, i) => (
-                <div key={s.label} className="flex flex-col-reverse items-start gap-1">
-                  <dt className="text-[15px] text-[#5a4428]">
-                    {s.label}
-                    <Tbc when={s.tbc} />
-                  </dt>
-                  <dd className="flex items-center gap-3">
-                    <span className="mc-slot size-10 shrink-0 sm:size-12">
-                      <Item name={statIcons[i]} size={28} />
-                    </span>
-                    <span className="mc-font text-[26px] font-bold text-[#8a3f22] sm:text-4xl md:text-5xl lg:text-[30px] xl:text-4xl">
-                      {s.value}
-                    </span>
-                  </dd>
+          <div className="mt-14 grid gap-8 lg:grid-cols-[1.15fr_1fr] lg:gap-10">
+            <article data-reveal className="mc-runepanel p-7 md:p-10">
+              <div className="flex items-center gap-4">
+                <span className="relative mc-slot mc-slot-dark size-14 shrink-0">
+                  <Item name="book" size={34} className="mc-bob" />
+                  {Array.from({ length: 10 }, (_, i) => (
+                    <span key={i} aria-hidden="true" className="mc-glyph" />
+                  ))}
+                </span>
+                <div>
+                  <p className="mc-font text-[12px] tracking-[0.2em] text-[#d9c2ff] uppercase">Enchanted page · I</p>
+                  <h3 className="mc-font text-2xl font-bold uppercase [text-shadow:2px_2px_0_rgb(0_0_0/0.5)]">The problem</h3>
                 </div>
+              </div>
+              {problem.map((t, i) => (
+                <p key={i} className={`mt-5 leading-relaxed ${i ? "font-semibold text-white" : "text-white/85"}`}>
+                  <span className="sr-only">{t}</span>
+                  {/* The invisible copy holds the final size while the glyphs decode on top */}
+                  <span aria-hidden="true" className="grid">
+                    <span className="invisible [grid-area:1/1]">{t}</span>
+                    <span data-scramble className="overflow-hidden [overflow-wrap:anywhere] [grid-area:1/1]">
+                      {t}
+                    </span>
+                  </span>
+                </p>
               ))}
-            </dl>
-            <p className="mt-8 border-t-2 border-dashed border-[#c9b88c] pt-5 text-[15px] leading-relaxed">
-              Objective: build something real for how the world shops, styles and dresses. Reward: cash, internships and
-              a room full of people who get it.
-            </p>
-            <p className="mc-font mt-6 text-right text-[13px] text-[#7a5d33]">Page 2 of 2</p>
-          </article>
+              <p className="mt-5 border-t-2 border-dashed border-white/15 pt-5 text-[15px] leading-relaxed text-[#cdbdf5]">
+                Organised by the AI Skills Lab CoE at KIET, with supporting partners HP and Intel. Title sponsor Clothsy AI,
+                powered by FabricVTON, sets the fashion-AI challenges.
+              </p>
+            </article>
+
+            <div>
+              <h3 data-reveal className="mc-font text-2xl font-bold uppercase [text-shadow:2px_2px_0_rgb(0_0_0/0.5)]">
+                Quest log
+              </h3>
+              <dl className="mt-5 grid grid-cols-2 gap-4 [perspective:900px]">
+                {stats.map((st, i) => (
+                  <div key={st.label} data-reveal style={delay(i * 80)} className="mc-crystal flex flex-col-reverse p-5">
+                    <dt className="mt-1 text-[14px] text-white/80">
+                      {st.label}
+                      <Tbc when={st.tbc} />
+                    </dt>
+                    <dd className="flex items-center justify-between gap-2">
+                      <span data-count className="mc-font text-[30px] leading-none font-bold text-[var(--gold)] [text-shadow:3px_3px_0_rgb(0_0_0/0.55)] sm:text-4xl">
+                        {st.value}
+                      </span>
+                      <Item name={statIcons[i]} size={32} className="drop-shadow-[0_0_8px_rgb(217_194_255/0.8)]" />
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+              <p data-reveal className="mc-tooltip mt-5 p-5 text-[15px] leading-relaxed text-white/85">
+                <span className="mc-tooltip-title mr-2 text-[#ffff7f]">Objective:</span>
+                build something real for how the world shops, styles and dresses. Reward: cash, internships and a room full
+                of people who get it.
+              </p>
             </div>
           </div>
         </div>
-      </div>
+      </AboutMotion>
     </Section>
   );
 }
@@ -326,93 +256,100 @@ const trackItems: Record<TrackIcon, ItemName> = {
   brands: "chest",
 };
 
-// Desktop flip times (s): when the rider stops on each sign. She rides row 1
-// left to right, drops to row 2 and rides back, then leaves; see .mc-rider.
-const flipAt = [1.4, 3.1, 4.8, 9.8, 8.1, 6.4];
-
 /**
- * Oak sign hanging from a log beam by two chains. It starts blank and turns
- * over to show its content (on desktop when the rider lands on it).
+ * Rune card under a crystal ledge. Starts sealed (an amethyst face) and
+ * turns over to show the track; TracksMotion decides when.
  */
-function HangingSign({ flip, children, className = "" }: { flip: number; children: ReactNode; className?: string }) {
+function RuneCard({ index, children }: { index: string; children: ReactNode }) {
   return (
-    <div data-reveal className={`mc-sign-wrap ${className}`} style={{ ["--flip" as string]: `${flip}s` }}>
-      <div
-        aria-hidden="true"
-        className="mc-tx tx-log -mx-3 h-3 [--b:16px] shadow-[inset_0_2px_0_rgb(255_255_255/0.16),inset_0_-2px_0_rgb(0_0_0/0.4)]"
-      />
-      <div className="mc-sign-hang mc-sign-chains mt-8 h-[calc(100%-44px)]">
-        <div className="mc-sign-inner h-full">
-          <div className="mc-sign mc-sign-front h-full p-6">{children}</div>
-          <div aria-hidden="true" className="mc-sign mc-sign-back" />
+    <>
+      <div aria-hidden="true" className="mc-ledge" />
+      <div className="mc-rune mt-5 h-[calc(100%-36px)]">
+        <span aria-hidden="true" className="mc-rune-flash" />
+        <div className="mc-rune-inner h-full">
+          <div className="mc-rune-face mc-rune-front h-full p-6">{children}</div>
+          <div aria-hidden="true" className="mc-rune-face mc-rune-back">
+            <span className="mc-font text-5xl text-white/90 [text-shadow:4px_4px_0_rgb(40_10_80/0.6)]">ᔑ⍊ℸ</span>
+            <span className="mc-font text-[13px] tracking-[0.25em] text-white/80 uppercase">Track {index} · Sealed</span>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
 export function Tracks() {
   return (
     <Section id="tracks" tx="mc-photo bg-tracks" wash="wash-40">
-      <div className={container}>
-        <Heading
-          index="02"
-          label="The challenge"
-          title={
-            <>
-              Build what fashion <em>needs</em> next
-            </>
-          }
-          intro="Use AI, machine learning, computer vision, AR, web or app development, data analytics, or any technology that fits. Pick a track, or bring your own idea."
-        />
+      <TracksMotion>
+        <div className={container}>
+          <Heading
+            index="02"
+            label="The challenge"
+            title={
+              <>
+                Build what fashion <em>needs</em> next
+              </>
+            }
+            intro="Use AI, machine learning, computer vision, AR, web or app development, data analytics, or any technology that fits. Pick a track, or bring your own idea."
+          />
 
-        <ul data-reveal className="mc-tracks relative mt-14 grid gap-x-6 gap-y-10 md:grid-cols-2 lg:grid-cols-3">
-          {tracks.map((t, i) => (
-            <li key={t.title}>
-              <HangingSign className="h-full" flip={flipAt[i]}>
-                <div className="flex items-center justify-between">
-                  <span className="mc-slot size-14">
-                    <Item name={trackItems[t.icon]} size={36} />
+          <ul className="mc-runes relative mt-16 grid gap-x-6 gap-y-12 md:grid-cols-2 lg:mt-36 lg:grid-cols-3 lg:gap-y-28">
+            {tracks.map((t, i) => {
+              const n = String(i + 1).padStart(2, "0");
+              return (
+                <li key={t.title} className="mc-rune-slot">
+                  <RuneCard index={n}>
+                    <div className="flex items-start justify-between">
+                      <span className="mc-rune-item">
+                        <Item name={trackItems[t.icon]} size={40} />
+                      </span>
+                      <span className="mc-font text-[40px] leading-none font-bold text-transparent [-webkit-text-stroke:2px_rgb(217_194_255/0.55)]">
+                        {n}
+                      </span>
+                    </div>
+                    <h3 className="mc-font mt-5 text-[21px] leading-tight font-bold uppercase [text-shadow:2px_2px_0_rgb(0_0_0/0.5)]">
+                      {t.title}
+                    </h3>
+                    <p className="mt-2 text-white/80">{t.description}</p>
+                    <ul className="mt-4 space-y-1.5 text-[15px] text-white/90">
+                      {t.ideas.map((idea) => (
+                        <li key={idea} className="flex gap-2.5">
+                          <span aria-hidden="true" className="text-[#d9c2ff]">
+                            ✦
+                          </span>
+                          {idea}
+                        </li>
+                      ))}
+                    </ul>
+                  </RuneCard>
+                </li>
+              );
+            })}
+            {/* Unicorn rider, steered by TracksMotion on desktop */}
+            <li aria-hidden="true" className="mc-rider" />
+          </ul>
+
+          <div className="mc-rune-slot mc-rune-extra mt-12">
+            <RuneCard index="07">
+              <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+                <div className="flex items-center gap-4">
+                  <span className="mc-rune-item shrink-0">
+                    <Item name="star" size={40} />
                   </span>
-                  <span className="mc-font text-sm font-bold tracking-[0.15em] text-[#5a3d1c]">
-                    TRACK {String(i + 1).padStart(2, "0")}
-                  </span>
+                  <div>
+                    <p className="mc-font text-[13px] tracking-[0.15em] text-[#d9c2ff] uppercase">Track 07 · Open innovation</p>
+                    <p className="mt-1 text-lg font-semibold">
+                      Have an idea that doesn&apos;t fit a track? Any original solution to a real fashion problem is welcome.
+                    </p>
+                  </div>
                 </div>
-                <h3 className="mc-font mt-4 text-[22px] leading-tight font-bold uppercase">{t.title}</h3>
-                <div className="mt-2 h-[3px] bg-[#7a5d33]" aria-hidden="true" />
-                <p className="mt-3 font-medium">{t.description}</p>
-                <ul className="mt-4 space-y-1.5 text-[15px]">
-                  {t.ideas.map((idea) => (
-                    <li key={idea} className="flex gap-2.5">
-                      <span aria-hidden="true" className="mt-[0.55em] size-2 shrink-0 bg-[#8a3f22]" />
-                      {idea}
-                    </li>
-                  ))}
-                </ul>
-              </HangingSign>
-            </li>
-          ))}
-          {/* Unicorn rider who lands on each sign in turn (desktop only) */}
-          <li aria-hidden="true" className="mc-rider" />
-        </ul>
-
-        <HangingSign className="mc-tracks-extra mt-12" flip={12.6}>
-          <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
-            <div className="flex items-center gap-4">
-              <span className="mc-slot size-14 shrink-0">
-                <Item name="star" size={36} />
-              </span>
-              <div>
-                <p className="mc-font text-sm font-bold tracking-[0.15em] text-[#5a3d1c]">TRACK 07 · OPEN INNOVATION</p>
-                <p className="mt-1 text-lg font-semibold">
-                  Have an idea that doesn&apos;t fit a track? Any original solution to a real fashion problem is welcome.
-                </p>
+                <McRegister className="shrink-0">Pitch your idea</McRegister>
               </div>
-            </div>
-            <McRegister className="mc-btn-wood shrink-0">Pitch your idea</McRegister>
+            </RuneCard>
           </div>
-        </HangingSign>
-      </div>
+        </div>
+      </TracksMotion>
     </Section>
   );
 }

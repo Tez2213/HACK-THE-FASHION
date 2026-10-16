@@ -1,7 +1,8 @@
 import { Tbc } from "../components/Tbc";
 import { criteria, event, judges, mentorAreas, schedule, type SlotKind } from "../lib/event";
 import { McTimeline } from "./McTimeline";
-import { container, delay, Heading, Item, Section, type ItemName } from "./ui";
+import { MentorsMotion } from "./Motion";
+import { container, delay, Heading, Item, Section, Sprite, Sticker, type ItemName, type StickerName } from "./ui";
 
 export function TimelineSection() {
   return (
@@ -23,14 +24,27 @@ export function TimelineSection() {
   );
 }
 
-const kinds: Record<SlotKind, { label: string; item: ItemName }> = {
-  milestone: { label: "Milestone", item: "star" },
-  meal: { label: "Food", item: "bread" },
-  mentor: { label: "Mentors", item: "nametag" },
-  checkpoint: { label: "Checkpoint", item: "clock" },
-  judging: { label: "Judging", item: "emerald" },
-  fun: { label: "Fun", item: "heart" },
+const kinds: Record<SlotKind, { label: string; sticker: StickerName }> = {
+  milestone: { label: "Milestone", sticker: "fire" },
+  meal: { label: "Food", sticker: "pizza" },
+  mentor: { label: "Mentors", sticker: "brain" },
+  checkpoint: { label: "Checkpoint", sticker: "alarm" },
+  judging: { label: "Judging", sticker: "monocle" },
+  fun: { label: "Fun", sticker: "party" },
 };
+// Per-slot stickers by what happens; anything unmatched falls back to its kind.
+const slotStickers: [RegExp, StickerName][] = [
+  [/check-in/i, "wave"],
+  [/opening/i, "popper"],
+  [/freeze/i, "freeze"],
+  [/closing|prize/i, "trophy"],
+  [/pitch/i, "starstruck"],
+  [/breakfast/i, "pancakes"],
+  [/dinner/i, "noodles"],
+  [/snack/i, "popcorn"],
+];
+const stickerFor = (s: { activity: string; kind?: SlotKind }): StickerName =>
+  slotStickers.find(([re]) => re.test(s.activity))?.[1] ?? (s.kind ? kinds[s.kind].sticker : "wave");
 
 type Slot = (typeof schedule)[number]["slots"][number];
 type Row = { day: (typeof schedule)[number]; slot?: undefined } | { slot: Slot; day?: undefined };
@@ -93,7 +107,7 @@ export function Schedule() {
         <ul data-reveal aria-label="Legend" className="mt-6 flex flex-wrap justify-center gap-x-4 gap-y-2">
           {Object.values(kinds).map((k) => (
             <li key={k.label} className="mc-font flex items-center gap-1.5 text-[14px] [text-shadow:1px_1px_0_rgb(0_0_0/0.8)]">
-              <Item name={k.item} size={20} />
+              <Sticker name={k.sticker} size={24} />
               {k.label}
             </li>
           ))}
@@ -126,7 +140,9 @@ export function Schedule() {
                     <div
                       className={`mc-route-card mc-tooltip flex items-center gap-3 p-2.5 pr-4 ${row.slot.kind === "milestone" ? "mc-tooltip-gold" : ""}`}
                     >
-                      <span className="mc-slot mc-slot-dark size-10 shrink-0">{k && <Item name={k.item} size={24} />}</span>
+                      <span className="mc-route-sticker">
+                        <Sticker name={stickerFor(row.slot)} size={40} />
+                      </span>
                       <div className="min-w-0">
                         <time className="mc-font block text-[14px] font-bold text-[var(--gold)] tabular-nums">{row.slot.time}</time>
                         <p className={`text-[15px] leading-snug ${row.slot.kind === "milestone" ? "font-bold" : "text-white/90"}`}>
@@ -135,9 +151,9 @@ export function Schedule() {
                         </p>
                       </div>
                     </div>
-                    {big && k && (
+                    {big && (
                       <span aria-hidden="true" className="mc-route-loot">
-                        <Item name={k.item} size={56} className="mc-bob" />
+                        <Sticker name={stickerFor(row.slot)} size={72} className="mc-bob" />
                       </span>
                     )}
                   </>
@@ -146,6 +162,18 @@ export function Schedule() {
             );
           })}
         </ol>
+        <p className="mc-font mt-10 text-center text-[12px] text-white/55">
+          Animated stickers:{" "}
+          <a
+            href="https://googlefonts.github.io/noto-emoji-animation/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline underline-offset-2"
+          >
+            Noto Animated Emoji
+          </a>{" "}
+          by Google, CC BY 4.0
+        </p>
       </div>
     </Section>
   );
@@ -223,6 +251,15 @@ function initials(name: string) {
     .toUpperCase();
 }
 
+// Mentor trades: what you bring, what you leave with (by mentorAreas order).
+const trades: [ItemName, ItemName][] = [
+  ["paper", "diamond"],
+  ["spyglass", "painting"],
+  ["map", "chest"],
+  ["shears", "star"],
+  ["shirt", "emerald"],
+];
+
 export function Judges() {
   return (
     <Section id="judges" tx="mc-photo bg-judges" wash="wash-40">
@@ -268,48 +305,76 @@ export function Judges() {
         </ul>
         <p data-reveal className="mc-font mt-10 text-[15px] tracking-[0.12em] text-white/75 uppercase">More judges to be announced</p>
 
-        {/* Mentors */}
-        <div id="mentors" className="mt-20 grid gap-10 lg:grid-cols-[1fr_1.6fr] lg:gap-14">
-          <div>
-            <Heading
-              index="08"
-              label="Mentors"
-              title={
-                <>
-                  Unstuck, <em>on call</em>
-                </>
-              }
-              intro="Mentors circulate through the night across five areas of expertise. Book them during mentor rounds or flag them down any time."
-            />
-            <a
-              data-reveal
-              href={`mailto:${event.contact.email}?subject=Mentoring%20at%20Hack%20the%20Fashion`}
-              className="mc-btn mt-6"
-            >
-              Want to mentor? Write to us
-            </a>
-          </div>
+        {/* Mentors: a villager trading screen */}
+        <MentorsMotion>
+          <div id="mentors" className="mt-24 grid gap-10 lg:grid-cols-[1fr_1.5fr] lg:items-center lg:gap-14">
+            <div>
+              <Heading
+                index="08"
+                label="Mentors"
+                title={
+                  <>
+                    Unstuck, <em>on call</em>
+                  </>
+                }
+                intro="Mentors circulate through the night across five areas of expertise. Bring them what you're stuck on and trade it for a way forward, during mentor rounds or any time."
+              />
+              <div data-reveal className="mt-8 flex items-end gap-4">
+                <Sprite src="villager" w={16} h={24} className="mc-villager h-auto w-[96px]" />
+                <p className="mc-bubble-mini mc-font mb-16 text-[15px] font-bold">Hrmm!</p>
+              </div>
+              <a
+                data-reveal
+                href={`mailto:${event.contact.email}?subject=Mentoring%20at%20Hack%20the%20Fashion`}
+                className="mc-btn mc-btn-grass mt-6"
+              >
+                Want to mentor? Write to us
+              </a>
+            </div>
 
-          <ul className="grid gap-3 sm:grid-cols-2">
-            {mentorAreas.map((m, i) => (
-              <li key={m.area} data-reveal style={delay(i * 60)} className="mc-gui flex items-start gap-3 p-4">
-                <span className="mc-slot size-11 shrink-0">
-                  <Item name="nametag" size={28} />
-                </span>
-                <div>
-                  <p className="mc-gui-title text-[17px]">{m.area}</p>
-                  <p className="text-[14px] leading-snug text-[#3f3f3f]">{m.hint}</p>
+            <div data-reveal className="mc-trade p-4 md:p-6">
+              <div className="flex items-center justify-between gap-4">
+                <p className="mc-gui-title">Mentor · Master</p>
+                <div className="mc-xp w-32" role="presentation">
+                  <span className="block h-full w-[78%]" />
                 </div>
-              </li>
-            ))}
-            <li data-reveal style={delay(300)} className="mc-tooltip flex items-center p-4">
-              <p className="mc-tooltip-title text-[15px] text-[#ffff7f]">
-                Mentor line-up revealed soon
-                <Tbc />
-              </p>
-            </li>
-          </ul>
-        </div>
+              </div>
+              <ul className="mt-4 space-y-2.5">
+                {mentorAreas.map((m, i) => {
+                  const [cost, result] = trades[i % trades.length];
+                  return (
+                    <li key={m.area} className="mc-trade-row">
+                      <span aria-hidden="true" className="mc-slot size-12 shrink-0">
+                        <Item name={cost} size={30} />
+                      </span>
+                      <span aria-hidden="true" className="mc-trade-arrow">
+                        <span className="mc-trade-fill" />
+                      </span>
+                      <span aria-hidden="true" className="mc-trade-result mc-slot size-12 shrink-0">
+                        <Item name={result} size={30} />
+                      </span>
+                      <div className="min-w-0">
+                        <p className="mc-gui-title text-[17px] leading-tight">{m.area}</p>
+                        <p className="text-[14px] leading-snug text-[#3f3f3f]">{m.hint}</p>
+                      </div>
+                    </li>
+                  );
+                })}
+                {/* Locked offer, like an out-of-stock trade */}
+                <li className="mc-trade-row mc-trade-locked">
+                  <span aria-hidden="true" className="mc-slot size-12 shrink-0">
+                    <Item name="nametag" size={30} />
+                  </span>
+                  <span aria-hidden="true" className="mc-font text-2xl font-bold text-[#c43a3a]">✕</span>
+                  <p className="mc-gui-title text-[16px]">
+                    Mentor line-up revealed soon
+                    <Tbc />
+                  </p>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </MentorsMotion>
       </div>
     </Section>
   );

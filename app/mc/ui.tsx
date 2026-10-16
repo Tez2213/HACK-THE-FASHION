@@ -51,6 +51,43 @@ export function Sprite({
   return <img src={`/mc/${src}.png`} alt="" width={w} height={h} className={`px ${className}`} style={style} aria-hidden="true" />;
 }
 
+export type StickerName =
+  | "alarm"
+  | "brain"
+  | "freeze"
+  | "monocle"
+  | "noodles"
+  | "pancakes"
+  | "party"
+  | "pizza"
+  | "popcorn"
+  | "popper"
+  | "fire"
+  | "starstruck"
+  | "trophy"
+  | "wave";
+
+/**
+ * Animated sticker from public/mc/stickers: Google's Noto Animated Emoji
+ * (CC BY 4.0), shrunk to 96px. Reduced motion gets the still first frame.
+ */
+export function Sticker({ name, size = 40, className = "" }: { name: StickerName; size?: number; className?: string }) {
+  return (
+    <picture>
+      <source srcSet={`/mc/stickers/${name}.png`} media="(prefers-reduced-motion: reduce)" />
+      <img
+        src={`/mc/stickers/${name}.webp`}
+        alt=""
+        width={size}
+        height={size}
+        loading="lazy"
+        decoding="async"
+        className={`shrink-0 ${className}`}
+      />
+    </picture>
+  );
+}
+
 /** Textured section. `tx` is a tx-* class, `wash` a wash-* class. */
 export function Section({
   id,
